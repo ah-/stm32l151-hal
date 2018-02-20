@@ -1,53 +1,12 @@
-use core::marker::PhantomData;
-use stm32l151::gpioa::RegisterBlock;
-use hal::digital::{InputPin, OutputPin};
-
 pub trait GpioExt {
-    type Parts;
+    type Pins;
 
-    fn split(self) -> Self::Parts;
+    fn split(self) -> Self::Pins;
 }
 
 pub struct Input;
 pub struct Output;
 pub struct Alternate;
-
-/// Erased pin
-pub struct Pin<MODE> {
-    i: u8,
-    gpio_ptr: *const RegisterBlock,
-    _mode: PhantomData<MODE>,
-}
-
-unsafe impl<MODE> Send for Pin<MODE> {}
-
-impl InputPin for Pin<Input> {
-    fn is_high(&self) -> bool {
-        !self.is_low()
-    }
-
-    fn is_low(&self) -> bool {
-        unsafe { (*self.gpio_ptr).idr.read().bits() & (1 << self.i) == 0 }
-    }
-}
-
-impl OutputPin for Pin<Output> {
-    fn is_high(&self) -> bool {
-        !self.is_low()
-    }
-
-    fn is_low(&self) -> bool {
-        unsafe { (*self.gpio_ptr).odr.read().bits() & (1 << self.i) == 0 }
-    }
-
-    fn set_high(&mut self) {
-        unsafe { (*self.gpio_ptr).bsrr.write(|w| w.bits(1 << self.i)) }
-    }
-
-    fn set_low(&mut self) {
-        unsafe { (*self.gpio_ptr).bsrr.write(|w| w.bits(1 << (16 + self.i))) }
-    }
-}
 
 macro_rules! gpio {
     ($GPIOX:ident, $gpiox:ident, $gpioy:ident, $iopxenr:ident, $iopxrst:ident, [
@@ -55,7 +14,6 @@ macro_rules! gpio {
     ]) => {
         pub mod $gpiox {
             use core::marker::PhantomData;
-            use core::mem::transmute;
 
             use hal::digital::{InputPin, OutputPin};
             use stm32l151::$GPIOX;
@@ -63,7 +21,7 @@ macro_rules! gpio {
             use super::{Alternate, GpioExt, Input, Output};
 
             /// GPIO parts
-            pub struct Parts {
+            pub struct Pins {
                 $(
                     /// Pin
                     pub $pxi: $PXi<$MODE>,
@@ -71,10 +29,10 @@ macro_rules! gpio {
             }
 
             impl GpioExt for $GPIOX {
-                type Parts = Parts;
+                type Pins = Pins;
 
-                fn split(self) -> Parts {
-                    Parts {
+                fn split(self) -> Pins {
+                    Pins {
                         $(
                             $pxi: $PXi { _mode: PhantomData },
                         )+
@@ -157,15 +115,6 @@ macro_rules! gpio {
                         }
 
                         self
-                    }
-
-                    /// Erases the pin number and gpio bank from the type
-                    pub fn downgrade(self) -> super::Pin<MODE> {
-                        super::Pin {
-                            i: $i,
-                            gpio_ptr: unsafe { transmute($GPIOX::ptr()) },
-                            _mode: self._mode,
-                        }
                     }
                 }
 
