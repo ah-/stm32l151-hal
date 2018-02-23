@@ -5,7 +5,7 @@ description = "HAL for STM32L151 microcontrollers"
 keywords = ["arm", "cortex-m", "stm32", "hal"]
 license = "MIT OR Apache-2.0"
 name = "stm32l151-hal"
-repository = "https://github.com/japaric/stm32f103xx-hal"
+repository = "https://github.com/ah-/stm32l151-hal"
 version = "0.1.0"
 
 [dependencies]
