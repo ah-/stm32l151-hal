@@ -24,7 +24,7 @@ macro_rules! dma {
     }),)+) => {
         $(
             pub mod $dmaX {
-                use stm32l151::{$DMAX, dma1};
+                use stm32l1::stm32l151::{$DMAX, dma1};
                 use super::DmaExt;
 
                 pub struct Channels((), $(pub $CX),+);
