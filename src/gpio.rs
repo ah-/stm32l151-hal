@@ -16,7 +16,7 @@ macro_rules! gpio {
             use core::marker::PhantomData;
 
             use hal::digital::{InputPin, OutputPin};
-            use stm32l151::$GPIOX;
+            use stm32l1::stm32l151::$GPIOX;
 
             use super::{Alternate, GpioExt, Input, Output};
 
