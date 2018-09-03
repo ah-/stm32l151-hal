@@ -9,16 +9,16 @@ repository = "https://github.com/ah-/stm32l151-hal"
 version = "0.2.0"
 
 [dependencies]
-cortex-m = "0.4.3"
+cortex-m = "0.5.6"
 nb = "0.1.1"
 
 [dependencies.stm32l1]
 features = ["stm32l151", "rt"]
-version = "0.1.1"
+version = "0.2.2"
 
 [dependencies.cortex-m-rt]
 optional = true
-version = "0.4.0"
+version = "0.5.3"
 
 [dependencies.embedded-hal]
 features = ["unproven"]
