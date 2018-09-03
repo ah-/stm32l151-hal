@@ -6,7 +6,7 @@ keywords = ["arm", "cortex-m", "stm32", "hal"]
 license = "MIT OR Apache-2.0"
 name = "stm32l151-hal"
 repository = "https://github.com/ah-/stm32l151-hal"
-version = "0.2.0"
+version = "0.3.0"
 
 [dependencies]
 cortex-m = "0.5.6"
