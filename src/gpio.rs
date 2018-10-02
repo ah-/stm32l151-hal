@@ -129,14 +129,6 @@ macro_rules! gpio {
                 }
 
                 impl OutputPin for $PXi<Output> {
-                    fn is_high(&self) -> bool {
-                        !self.is_low()
-                    }
-
-                    fn is_low(&self) -> bool {
-                        unsafe { (*$GPIOX::ptr()).odr.read().bits() & (1 << $i) == 0 }
-                    }
-
                     fn set_high(&mut self) {
                         unsafe { (*$GPIOX::ptr()).bsrr.write(|w| w.bits(1 << $i)) }
                     }

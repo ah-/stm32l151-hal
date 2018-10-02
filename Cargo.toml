@@ -6,20 +6,20 @@ keywords = ["arm", "cortex-m", "stm32", "hal"]
 license = "MIT OR Apache-2.0"
 name = "stm32l151-hal"
 repository = "https://github.com/ah-/stm32l151-hal"
-version = "0.3.0"
+version = "0.4.0"
 
 [dependencies]
-cortex-m = "0.5.6"
+cortex-m = "0.5.7"
 nb = "0.1.1"
 
 [dependencies.stm32l1]
 features = ["stm32l151", "rt"]
-version = "0.2.2"
+version = "0.2.3"
 
 [dependencies.cortex-m-rt]
 optional = true
-version = "0.5.3"
+version = "0.6.4"
 
 [dependencies.embedded-hal]
 features = ["unproven"]
-version = "0.1.0"
+version = "0.2.1"
