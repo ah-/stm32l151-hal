@@ -15,7 +15,7 @@ macro_rules! gpio {
         pub mod $gpiox {
             use core::marker::PhantomData;
 
-            use crate::hal::digital::{InputPin, OutputPin};
+            use crate::hal::digital::v2::{InputPin, OutputPin};
             use stm32l1::stm32l151::$GPIOX;
 
             use super::{Alternate, GpioExt, Input, Output};
@@ -119,22 +119,26 @@ macro_rules! gpio {
                 }
 
                 impl InputPin for $PXi<Input> {
-                    fn is_high(&self) -> bool {
-                        !self.is_low()
+                    type Error = core::convert::Infallible;
+
+                    fn is_high(&self) -> Result<bool, Self::Error> {
+                        self.is_low().map(|v| !v)
                     }
 
-                    fn is_low(&self) -> bool {
-                        unsafe { (*$GPIOX::ptr()).idr.read().bits() & (1 << $i) == 0 }
+                    fn is_low(&self) -> Result<bool, Self::Error> {
+                        Ok(unsafe { (*$GPIOX::ptr()).idr.read().bits() & (1 << $i) == 0 })
                     }
                 }
 
                 impl OutputPin for $PXi<Output> {
-                    fn set_high(&mut self) {
-                        unsafe { (*$GPIOX::ptr()).bsrr.write(|w| w.bits(1 << $i)) }
+                    type Error = core::convert::Infallible;
+
+                    fn set_high(&mut self) -> Result<(), Self::Error> {
+                        Ok(unsafe { (*$GPIOX::ptr()).bsrr.write(|w| w.bits(1 << $i)) })
                     }
 
-                    fn set_low(&mut self) {
-                        unsafe { (*$GPIOX::ptr()).bsrr.write(|w| w.bits(1 << (16 + $i))) }
+                    fn set_low(&mut self) -> Result<(), Self::Error> {
+                        Ok(unsafe { (*$GPIOX::ptr()).bsrr.write(|w| w.bits(1 << (16 + $i))) })
                     }
                 }
             )+
